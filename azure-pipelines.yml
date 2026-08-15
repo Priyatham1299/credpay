@@ -34,6 +34,13 @@ stages:
           - task: TerraformTask@5
             inputs:
               provider: 'azurerm'
+              command: 'force-unlock'
+              workingDirectory: 'terraform'
+              environmentServiceNameAzureRM: 'Manual connection'
+              commandOptions: 'b40e4f7c-3ada-7885-673a-b8c7f52c8042'
+          - task: TerraformTask@5
+            inputs:
+              provider: 'azurerm'
               command: 'plan'
               workingDirectory: 'terraform'
               environmentServiceNameAzureRM: 'Manual connection'
