@@ -32,12 +32,13 @@ stages:
               backendAzureRmContainerName: 'statefile'
               backendAzureRmKey: 'credpay.terraform.tfstate'
           - task: TerraformTask@5
+            displayName: 'Force unlock Terraform state'
             inputs:
               provider: 'azurerm'
-              command: 'force-unlock'
+              command: 'custom'
               workingDirectory: 'terraform'
+              commandOptions: 'force-unlock -force b40e4f7c-3ada-7885-673a-b8c7f52c8042'
               environmentServiceNameAzureRM: 'Manual connection'
-              commandOptions: 'b40e4f7c-3ada-7885-673a-b8c7f52c8042'
           - task: TerraformTask@5
             inputs:
               provider: 'azurerm'
