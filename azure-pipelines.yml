@@ -11,19 +11,42 @@ variables:
   tag: '$(Build.BuildId)'
 
 stages:
-  - stage: dockerbuild
-    displayName: dockerbuild
+  - stage: terraform
+    displayName: terraform infra
     jobs:
-      - job: buildPushImages
+      - job: terraformapply
+        displayName: terraform init and apply
         steps:
           - checkout: self
-          - task: Docker@2
+          - task: TerraformInstaller@1
             inputs:
-              containerRegistry: 'cred-acr-serviceconnection'
-              repository: '$(frontendrepository)'
-              command: 'buildAndPush'
-              Dockerfile: 'frontend-react/Dockerfile'
-              buildContext: 'frontend-react'
-              tags: |
-                $(tag)
-                latest
+              terraformVersion: 'latest'
+          - task: TerraformTask@5
+            inputs:
+              provider: 'azurerm'
+              command: 'init'
+              workingDirectory: 'terraform'
+              backendServiceArm: 'Manual connection'
+              backendAzureRmResourceGroupName: 'credpayrg'
+              backendAzureRmStorageAccountName: 'credpaystate'
+              backendAzureRmContainerName: 'statefile'
+              backendAzureRmKey: 'credpay.terraform.tfstate'
+                
+
+# stages:
+#   - stage: dockerbuild
+#     displayName: dockerbuild
+#     jobs:
+#       - job: buildPushImages
+#         steps:
+#           - checkout: self
+#           - task: Docker@2
+#             inputs:
+#               containerRegistry: 'cred-acr-serviceconnection'
+#               repository: '$(frontendrepository)'
+#               command: 'buildAndPush'
+#               Dockerfile: 'frontend-react/Dockerfile'
+#               buildContext: 'frontend-react'
+#               tags: |
+#                 $(tag)
+#                 latest
