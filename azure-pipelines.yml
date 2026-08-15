@@ -1,0 +1,29 @@
+
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  acrserviceconnection: 'cred-acr-serviceconnection'
+  frontendrepository: 'credpay/frontend'
+  userrepository: 'credpay/user-service'
+  paymentrepository: 'credpay/payment-service'
+  tag: '$(Build.BuildId)'
+
+stages:
+  - stage: dockerbuild
+    displayName: dockerbuild
+    jobs:
+      - job: buildPushImages
+        steps:
+          - checkout: self
+          - task: Docker@2
+            inputs:
+              containerRegistry: 'cred-acr-serviceconnection'
+              repository: '$(frontendrepository)'
+              command: 'buildAndPush'
+              Dockerfile: 'frontend-react/Dockerfile'
+              buildContext: 'frontend-react'
+              tags: |
+                $(tag)
+                latest
