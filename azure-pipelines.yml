@@ -22,6 +22,7 @@ stages:
             inputs:
               terraformVersion: 'latest'
           - task: TerraformTask@5
+            displayName: init
             inputs:
               provider: 'azurerm'
               command: 'init'
@@ -31,15 +32,19 @@ stages:
               backendAzureRmStorageAccountName: 'credpaystate'
               backendAzureRmContainerName: 'statefile'
               backendAzureRmKey: 'credpay.terraform.tfstate'
+
+# - task: TerraformTask@5
+#   displayName: 'Force unlock Terraform state'
+#   inputs:
+#     provider: 'azurerm'
+#     command: 'custom'
+#     workingDirectory: 'terraform'
+#     commandOptions: 'force-unlock -force b40e4f7c-3ada-7885-673a-b8c7f52c8042'
+#     environmentServiceNameAzureRM: 'Manual connection'
+
+
           - task: TerraformTask@5
-            displayName: 'Force unlock Terraform state'
-            inputs:
-              provider: 'azurerm'
-              command: 'custom'
-              workingDirectory: 'terraform'
-              commandOptions: 'force-unlock -force b40e4f7c-3ada-7885-673a-b8c7f52c8042'
-              environmentServiceNameAzureRM: 'Manual connection'
-          - task: TerraformTask@5
+            displayName: plan
             inputs:
               provider: 'azurerm'
               command: 'plan'
